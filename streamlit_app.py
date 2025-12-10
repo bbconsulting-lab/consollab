@@ -13,9 +13,6 @@ import sys
 # openpyxl의 Data Validation 관련 경고 메시지 무시
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
 
-st.set_page_config(
-    page_title="ConsolLab", page_icon="ConsolLab_logo.png", layout="wide"
-)
 
 # ----------------------------------------------------------------
 # [필수] PyInstaller 경로 호환 함수
@@ -32,6 +29,14 @@ def resource_path(relative_path):
         base_path = os.path.abspath(".")
 
     return os.path.join(base_path, relative_path)
+
+
+# 로고 파일을 찾는 함수로 파일명을 감싸주세요!
+st.set_page_config(
+    page_title="ConsolLab", 
+    page_icon=resource_path("ConsolLab_logo.png"),
+    layout="wide"
+)
 
 
 # --- App Title ---
