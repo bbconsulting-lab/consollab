@@ -35,6 +35,8 @@ a = Analysis(
         'watchdog',
         'blinker',
         'cachetools',
+        'webview',
+        'webview.platforms.winforms',
     ],
     hookspath=[],
     hooksconfig={},
