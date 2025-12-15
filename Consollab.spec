@@ -13,7 +13,7 @@ a = Analysis(
     ['splash_app.py'],
     pathex=[],
     binaries=[],
-    datas=[('streamlit_app.py', '.'), ('ConsolLab_logo.png', '.')] + streamlit_datas + streamlit_metadata + packaging_metadata + requests_metadata,
+    datas=[('version_info.py', '.'), ('streamlit_app.py', '.'), ('ConsolLab_logo.png', '.')] + streamlit_datas + streamlit_metadata + packaging_metadata + requests_metadata,
     hiddenimports=[
         'streamlit',
         'streamlit.runtime.scriptrunner.magic_funcs', 

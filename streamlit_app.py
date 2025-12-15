@@ -9,6 +9,7 @@ from contextlib import redirect_stdout
 import warnings
 import os
 import sys
+from version_info import VERSION
 
 # openpyxl의 Data Validation 관련 경고 메시지 무시
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
@@ -38,6 +39,15 @@ st.set_page_config(
     layout="wide"
 )
 
+# ★★★ Streamlit 기본 UI 숨기기 (네이티브 앱처럼 보이게) ★★★
+hide_st_style = """
+            <style>
+            #MainMenu {visibility: hidden;}
+            footer {visibility: hidden;}
+            header {visibility: hidden;}
+            </style>
+            """
+st.markdown(hide_st_style, unsafe_allow_html=True)
 
 # --- App Title ---
 col1, col2 = st.columns([1, 5])
@@ -393,6 +403,12 @@ with st.sidebar:
     st.session_state.files["adjustment"] = st.file_uploader(
         "4. 연결 조정 분개 (CAJE 업로드)", type="xlsx", key="adj_uploader"
     )
+    st.divider()
+    
+    # ★ 여기서 VERSION 변수를 사용!
+    st.caption(f"ConsolLab v{VERSION}") 
+    # st.caption("consollab@bbconsulting.co.kr")
+    # st.caption("2025 ©BBCONSULTING")
 
 # --- 탭 구성 ---
 tab1, tab2, tab3, tab4 = st.tabs(

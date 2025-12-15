@@ -10,14 +10,15 @@ import webbrowser
 from packaging import version
 from streamlit.web import cli as stcli
 import webview
+from version_info import VERSION
 
 # ---------------------------------------------------------
 # [설정 영역]
 # ---------------------------------------------------------
 TARGET_APP_FILE = "streamlit_app.py"
-WINDOW_TITLE = "ConsolLab"
-CURRENT_VERSION = "0.0.1"
-VERSION_JSON_URL = "https://github.com/bbconsulting-lab/consollab/blob/main/version.json" # 실제 URL로 변경
+CURRENT_VERSION = VERSION
+WINDOW_TITLE = f"ConsolLab (v{CURRENT_VERSION})"
+VERSION_JSON_URL = "https://raw.githubusercontent.com/bbconsulting-lab/consollab/refs/heads/main/version.json"
 
 # 텍스트 설정
 TEXT_INIT = "Initializing..."
@@ -55,7 +56,7 @@ def run_streamlit():
         "run",
         app_path,
         "--global.developmentMode=false",
-        "--server.headless=true",     # ★ 중요: 브라우저 팝업 차단
+        "--server.headless=true",     # 브라우저 팝업 차단
         "--server.address=127.0.0.1",
         "--server.port=8501",
         "--theme.base=light"
@@ -114,7 +115,7 @@ def check_update_and_prepare(root, status_label):
     # 서버가 켜질 때까지 잠시 대기 (2초)
     time.sleep(2)
     
-    # ★ 중요: 스플래시 창을 닫습니다. (메인 스레드가 풀려나게 됨)
+    # 스플래시 창을 닫습니다. (메인 스레드가 풀려나게 됨)
     root.quit()
 
 # ---------------------------------------------------------
@@ -163,22 +164,35 @@ def show_splash():
 # ---------------------------------------------------------
 # [메인 실행부]
 # ---------------------------------------------------------
+# ---------------------------------------------------------
+# [추가] 창이 닫길 때 실행될 강력한 종료 함수
+# ---------------------------------------------------------
+def on_closed():
+    print("앱이 종료됩니다. 프로세스를 정리합니다.")
+    # sys.exit() 대신 os._exit(0)을 써야 남아있는 스레드(Streamlit 등)를 무시하고 즉시 완전히 꺼집니다.
+    os._exit(0)
+
 if __name__ == '__main__':
-    # 1. 스플래시 화면 실행 (여기서 버전체크, 서버시작 다 하고 닫힘)
     show_splash()
     
     # 2. 스플래시가 닫히면 바로 네이티브 창 실행
-    # (이미 Streamlit 서버는 백그라운드에서 돌아가는 중)
     try:
-        webview.create_window(
-            WINDOW_TITLE, 
-            "http://127.0.0.1:8501",
+        # 1) 창 객체를 변수(window)에 담습니다.
+        window = webview.create_window(
+            title=WINDOW_TITLE, 
+            url="http://127.0.0.1:8501",
             width=1280, 
             height=800,
             resizable=True
         )
-        webview.start(icon=resource_path("icon.ico"))
+        
+        # 2) [핵심] 창이 닫힐 때 on_closed 함수가 실행되도록 연결합니다.
+        window.events.closed += on_closed
+        
+        # 3) 앱 시작 (아이콘 설정 포함)
+        webview.start(icon=resource_path("logo.ico"))
         
     except Exception as e:
         print(f"Error: {e}")
-        sys.exit()
+        # 혹시 모를 에러 상황에서도 확실히 끄기 위해
+        os._exit(0)
