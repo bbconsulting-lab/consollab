@@ -15,7 +15,7 @@ ConsolLab_Setup.exe Download URL : [https://github.com/bbconsulting-lab/consolla
 
 # 1. Excel file teamplates
 
-엑셀 파일 템플릿은 
+엑셀 파일 템플릿 참조 : https://github.com/bbconsulting-lab/consollab/tree/main/templates
 
 ## 1) CoA (Chart of Account) : CoA_Level.xlsx
 
