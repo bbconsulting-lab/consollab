@@ -86,7 +86,7 @@ def check_update_and_prepare(root, status_label):
         response = requests.get(VERSION_JSON_URL, timeout=3)
         if response.status_code == 200:
             data = response.json()
-            latest_ver = data.get("latest_version", "0.0.0")
+            latest_ver = data.get("latest_version", "0.0.2")
             download_url = data.get("download_url", "")
             
             if version.parse(latest_ver) > version.parse(CURRENT_VERSION):
@@ -112,8 +112,8 @@ def check_update_and_prepare(root, status_label):
     t.daemon = True
     t.start()
     
-    # 서버가 켜질 때까지 잠시 대기 (2초)
-    time.sleep(2)
+    # 서버가 켜질 때까지 잠시 대기 (7초)
+    time.sleep(7)
     
     # 스플래시 창을 닫습니다. (메인 스레드가 풀려나게 됨)
     root.quit()
@@ -160,11 +160,11 @@ def show_splash():
     
     root.after(200, start_process)
     root.mainloop() # 여기서 대기하다가 root.quit()이 호출되면 아래로 넘어갑니다.
+    # 루프가 끝나면 창을 메모리에서 완전히 삭제합니다! ★★★
+    root.destroy()
 
 # ---------------------------------------------------------
 # [메인 실행부]
-# ---------------------------------------------------------
-# ---------------------------------------------------------
 # [추가] 창이 닫길 때 실행될 강력한 종료 함수
 # ---------------------------------------------------------
 def on_closed():
