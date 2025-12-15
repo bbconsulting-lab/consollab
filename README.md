@@ -1,10 +1,9 @@
-# consollab
+# ConsolLab
 
 [ConsolLab_Setup.exe 사용자 안내] "ConsolLab_Setup.exe 설치 파일 실행(또는 업데이트 실행) 시 파란색 보호 창이 뜨면, **[추가 정보]**를 누른 뒤 하단의 [실행] 버튼을 클릭해 주세요. 인증서를 구매하지 않은 자체 개발 프로그램이라 뜨는 현상이며, 바이러스가 아니니 안심하셔도 됩니다."  
   
 ConsolLab_Setup.exe Download URL : [https://github.com/bbconsulting-lab/consollab/releases/download/v0.0.2/ConsolLab_Setup.exe](https://github.com/bbconsulting-lab/consollab/releases/download/v0.0.2/ConsolLab_Setup.exe)
 
-# ConsolLab 연결봇
 
 연결봇 ConsolLab은 연결재무제표 작성에 필요한 엑셀 작업을 돕는 프로그램입니다.
 연결 재무제표, 주석 합산 및 대사, 연결조정분개 산출, 외화표시 재무제표 환산 등을 도와주는 기능을 합니다.  
