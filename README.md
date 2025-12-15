@@ -157,3 +157,7 @@ CoA_Level.xlsx 파일의 "CF" 시트의 "CF_code", "현금흐름표"와 "금액"
 
 ConsolLab은 FS_Element 를 식별하여 A와 L은 기말환율, R과 X는 평균환율을 적용하고 E는 이월금액, RE에는 이월금액에 평균환율을 적용한 당기손익을 합산, PI에 해외사업환산손익을 Plug-In 합니다.
 
+
+# Contact
+
+For questions, suggestions, or collaboration inquiries, please contact: consollab@bbconsulting.co.kr
