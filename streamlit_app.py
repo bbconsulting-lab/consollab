@@ -10,9 +10,44 @@ import warnings
 import os
 import sys
 from version_info import VERSION
+import tkinter as tk
+from tkinter import filedialog
 
 # openpyxl의 Data Validation 관련 경고 메시지 무시
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
+
+
+# 파일 저장 함수
+def save_excel_native(excel_bytes, default_filename="result.xlsx"):
+    """
+    이미 생성된 엑셀 바이너리 데이터(bytes)를 받아서
+    윈도우 '다른 이름으로 저장' 창을 통해 저장합니다.
+    """
+    # 1. Tkinter 숨겨진 창 생성
+    root = tk.Tk()
+    root.withdraw()
+    root.wm_attributes('-topmost', 1)
+
+    # 2. 저장 대화상자 열기 (확장자 xlsx 고정)
+    file_path = filedialog.asksaveasfilename(
+        parent=root,
+        initialfile=default_filename,
+        defaultextension=".xlsx",
+        filetypes=[("Excel files", "*.xlsx"), ("All files", "*.*")],
+        title="엑셀 파일 저장 위치 선택"
+    )
+    
+    # 3. 창 닫기
+    root.destroy()
+
+    # 4. 파일 쓰기 (바이너리 모드 'wb' 중요!)
+    if file_path:
+        try:
+            with open(file_path, "wb") as f:
+                f.write(excel_bytes) # 받아온 데이터를 파일로 씀
+            st.success(f"엑셀 파일이 저장되었습니다!\n경로: {file_path}")
+        except Exception as e:
+            st.error(f"저장 중 오류 발생: {e}")
 
 
 # ----------------------------------------------------------------
@@ -1283,12 +1318,9 @@ with tab1:
                 "Consol_CF": st.session_state.results["consolidation_wp_cf"],
                 "Consol_SCE": st.session_state.results.get("consolidation_wp_sce", pd.DataFrame()),
             })
-        st.download_button(
-            label="📥 전체 결과 다운로드 (Excel)",
-            data=excel_data,
-            file_name="consolidated_fs_results.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
+        if st.button("📥 전체 결과 저장 (Excel)"):
+            save_excel_native(excel_data, "consolidated_fs_results.xlsx")
+        
     elif not (st.session_state.files["coa"] and st.session_state.files["parent"]):
         st.info("사이드바에서 CoA와 모회사 자회사 연결조정분개 파일을 업로드한 후 '생성 실행' 버튼을 눌러주세요.")
 
@@ -1429,12 +1461,9 @@ with tab2:
             with st.expander(f"시트: {sheet_name}", expanded=False):
                 st.dataframe(df)
         footnote_excel_data = to_excel(st.session_state.results["combined_footnotes"])
-        st.download_button(
-            label="📥 취합된 주석 다운로드 (Excel)",
-            data=footnote_excel_data,
-            file_name="combined_footnotes.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
+        if st.button("📥 취합된 주석 다운로드 (Excel)"):
+            save_excel_native(footnote_excel_data, "combined_footnotes.xlsx")
+
 
 with tab3:
     st.header("3. 연결 조정 분개 생성")
@@ -2354,12 +2383,8 @@ with tab3:
         "템플릿을 다운로드하여 기본 조정 명세서 시트를 작성합니다."
     )
     template_data = create_adjustment_template()
-    st.download_button(
-        label="📥 조정명세 입력 템플릿 다운로드 (.xlsx)",
-        data=template_data,
-        file_name="조정명세_입력템플릿_BeforeTaxNci.xlsx",
-        mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-    )
+    if st.button("📥 조정명세 입력 템플릿 다운로드 (Excel)"):
+        save_excel_native(template_data, "조정명세_입력템플릿_BeforeTaxNci.xlsx")
 
     # --- Step 2: Upload Initial Adjustments ---
     st.subheader("Step 2: 기본 조정 파일 업로드")
@@ -2423,12 +2448,12 @@ with tab3:
                 st.markdown(log, unsafe_allow_html=True)
 
     if st.session_state.adj_workflow.get("intermediate_data"):
-        st.download_button(
-            label="📥 검토용 파일 다운로드 (자동계산 포함)",
-            data=st.session_state.adj_workflow["intermediate_data"],
-            file_name="조정명세_입력템플릿_TaxNci.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
+        if st.button("📥 검토용 파일 다운로드 (자동계산 포함)"):
+            save_excel_native(
+                st.session_state.adj_workflow["intermediate_data"], 
+                "조정명세_입력템플릿_TaxNci.xlsx"
+            )
+
 
     # --- Step 4: Upload Final File ---
     st.subheader("Step 4: 최종 조정 파일 업로드")
@@ -2892,12 +2917,8 @@ with tab3:
                 "CAJE_CF": st.session_state.results.get("caje_cf_df", pd.DataFrame()),
             }
         )
-        st.download_button(
-            label="📥 생성된 조정 분개(CAJE) 다운로드 (.xlsx)",
-            data=caje_excel_data,
-            file_name="CAJE_generated.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
+        if st.button("📥 생성된 조정 분개(CAJE) 다운로드 (Excel)"):
+            save_excel_native(caje_excel_data, "CAJE_generated.xlsx")
         st.info(
             "생성된 BS/PL CAJE 데이터는 '연결 재무제표' 탭의 '연결 조정' 데이터로 사용할 수 있습니다."
         )
@@ -2961,18 +2982,15 @@ with tab4:
         st.dataframe(st.session_state.fcfs_results["translated_df"])
         st.markdown("#### 📊 환산 요약")
         st.dataframe(st.session_state.fcfs_results["summary_df"])
-        excel_data = to_excel(
+        translated = to_excel(
             {
                 "translated": st.session_state.fcfs_results["translated_df"],
                 "summary": st.session_state.fcfs_results["summary_df"],
             }
         )
-        st.download_button(
-            label="📥 환산 결과 다운로드 (Excel)",
-            data=excel_data,
-            file_name="FCFS_translated.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
+        if st.button("📥 환산 결과 다운로드 (Excel)"):
+            save_excel_native(translated, "FCFS_translated.xlsx")
+        
 
 # =================================================================================================
 # --- 조정명세 차기이월 기능 ---
@@ -3231,9 +3249,8 @@ with tab3:
                     st.exception(e)
 
     if "carryover_file" in st.session_state.adj_workflow and st.session_state.adj_workflow.get("carryover_file"):
-        st.download_button(
-            label="📥 차기이월 조정명세 다운로드 (.xlsx)",
-            data=st.session_state.adj_workflow["carryover_file"],
-            file_name="조정명세_입력템플릿_carryover.xlsx",
-            mime="application/vnd.openxmlformats-officedocument.spreadsheetml.sheet",
-        )
+        if st.button("📥 차기이월 조정명세 다운로드 (Excel)"):
+            save_excel_native(
+                st.session_state.adj_workflow["carryover_file"], 
+                "조정명세_입력템플릿_carryover.xlsx"
+            )
