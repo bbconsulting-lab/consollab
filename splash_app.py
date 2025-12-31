@@ -161,7 +161,10 @@ def show_splash():
     root.after(200, start_process)
     root.mainloop() # 여기서 대기하다가 root.quit()이 호출되면 아래로 넘어갑니다.
     # 루프가 끝나면 창을 메모리에서 완전히 삭제합니다! ★★★
-    root.destroy()
+    try:
+        root.destroy()
+    except tk.TclError:
+        pass
 
 # ---------------------------------------------------------
 # [메인 실행부]

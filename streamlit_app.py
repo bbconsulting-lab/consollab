@@ -11,7 +11,7 @@ import os
 import sys
 from version_info import VERSION
 import tkinter as tk
-from tkinter import filedialog
+import tkinter.filedialog as fd
 
 # openpyxl의 Data Validation 관련 경고 메시지 무시
 warnings.filterwarnings('ignore', category=UserWarning, module='openpyxl')
@@ -29,7 +29,7 @@ def save_excel_native(excel_bytes, default_filename="result.xlsx"):
     root.wm_attributes('-topmost', 1)
 
     # 2. 저장 대화상자 열기 (확장자 xlsx 고정)
-    file_path = filedialog.asksaveasfilename(
+    file_path = fd.asksaveasfilename(
         parent=root,
         initialfile=default_filename,
         defaultextension=".xlsx",

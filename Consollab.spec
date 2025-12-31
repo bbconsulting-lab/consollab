@@ -37,6 +37,8 @@ a = Analysis(
         'cachetools',
         'webview',
         'webview.platforms.winforms',
+        'tkinter',
+        'tkinter.filedialog',
     ],
     hookspath=[],
     hooksconfig={},
